@@ -1,6 +1,8 @@
 import React from 'react';
-import Header from './components/Header';
-import UniversitySection from './components/UniversitySection';
+
+
+import Header from '@/components/Header';
+import UniversitySection from '@/components/UniversitySection';
 
 const universities = [
   {

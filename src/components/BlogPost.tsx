@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { Calendar, School } from 'lucide-react';
+
 
 interface BlogPostProps {
   title: string;

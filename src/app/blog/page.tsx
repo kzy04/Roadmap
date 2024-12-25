@@ -1,7 +1,8 @@
+import BlogPost from '@/components/BlogPost';
+import Header from '@/components/Header';
+import { blogPosts } from '@/data/blogPosts';
 import React from 'react';
-import Header from '../components/Header';
-import BlogPost from '../components/BlogPost';
-import { blogPosts } from '../data/blogPosts';
+
 
 const Blogs = () => {
   return (

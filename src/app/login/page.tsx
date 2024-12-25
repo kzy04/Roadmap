@@ -1,10 +1,12 @@
+'use client';
+
+import Header from '@/components/Header';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Header';
 
 const Login = () => {
-  const navigate = useNavigate();
+  const router = useRouter(); // Use useRouter for navigation
   const { login } = useAuth();
 
   const handleLogin = () => {
@@ -18,11 +20,11 @@ const Login = () => {
       semester: 3,
       completedCourses: ['cse115'],
       points: 750,
-      badges: ['first-semester']
+      badges: ['first-semester'],
     };
 
-    login(mockUser);
-    navigate('/course');
+    login(mockUser); // Log the user in
+    router.push('/course'); // Navigate to the course page
   };
 
   return (
@@ -43,6 +45,6 @@ const Login = () => {
       </main>
     </div>
   );
-}
+};
 
 export default Login;

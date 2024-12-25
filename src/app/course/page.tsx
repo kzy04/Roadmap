@@ -1,18 +1,22 @@
+'use client';
+import AchievementCard from '@/components/course/AchievementCard';
+import CourseNode from '@/components/course/CourseNode';
+import ProgressBar from '@/components/course/ProgressBar';
+import Header from '@/components/Header';
+import { useAuth } from '@/contexts/AuthContext';
+import { cseCourses, achievements } from '@/data/courseData';
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import Header from '../components/Header';
-import CourseNode from '../components/course/CourseNode';
-import ProgressBar from '../components/course/ProgressBar';
-import AchievementCard from '../components/course/AchievementCard';
-import { useAuth } from '../contexts/AuthContext';
-import { cseCourses, achievements } from '../data/courseData';
+import { useRouter } from 'next/navigation';
+
 
 const Course = () => {
   const { user } = useAuth();
+  const router = useRouter();
   const [showConfetti, setShowConfetti] = useState(false);
 
   if (!user) {
-    return <Navigate to="/login" />;
+    router.push('/login');
+    return null;
   }
 
   const calculateLevel = (points: number) => Math.floor(points / 1000) + 1;

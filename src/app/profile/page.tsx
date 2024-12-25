@@ -1,11 +1,13 @@
+'use client';
 import React, { useState } from 'react';
-import Header from '../components/Header';
-import ForumFilter from '../components/forum/ForumFilter';
-import ForumPost from '../components/forum/ForumPost';
-import CreatePostModal from '../components/forum/CreatePostModal';
-import { forumPosts } from '../data/forumPosts';
-import { University } from '../data/universities';
+
 import { PlusCircle } from 'lucide-react';
+import { forumPosts } from '@/data/forumPosts';
+import CreatePostModal from '@/components/forum/CreatePostModal';
+import ForumFilter from '@/components/forum/ForumFilter';
+import ForumPost from '@/components/forum/ForumPost';
+import Header from '@/components/Header';
+import { University } from '@/data/universities';
 
 const Forums = () => {
   const [selectedUniversity, setSelectedUniversity] = useState<University>("All Universities");
