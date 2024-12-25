@@ -7,6 +7,7 @@ import Blogs from './pages/Blogs.tsx';
 import Forums from './pages/Forums.tsx';
 import Course from './pages/Course.tsx';
 import Login from './pages/Login.tsx';
+import Profile from './pages/Profile.tsx';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   }
 ]);
 
