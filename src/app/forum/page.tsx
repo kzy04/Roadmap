@@ -41,12 +41,12 @@ const Forums = () => {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">University Forums</h1>
-            <p className="text-lg text-gray-600">Join discussions with fellow students</p>
+            <p className="text-lg text-gray-900">Join discussions with fellow students</p>
           </div>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            aria-label="Create a new post"
+           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+aria-label="Create a new post"
           >
             <PlusCircle size={20} />
             Create Post

@@ -1,3 +1,50 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Define custom CSS variables for light and dark modes */
+:root {
+  --background: #ffffff; /* Light mode background */
+  --foreground: #171717; /* Light mode text color */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a; /* Dark mode background */
+    --foreground: #ededed; /* Dark mode text color */
+  }
+}
+
+/* Apply custom variables to the body */
+body {
+  color: var(--foreground); /* Base text color */
+  background: var(--background); /* Base background color */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Ensure Tailwind's text color utilities override the body color */
+[class*="text-"] {
+  color: unset; /* Remove inherited body color for text utilities */
+}
+
+/* Optional: Fix buttons for better contrast */
+button {
+  background-color: var(--background); /* Inherit background */
+  color: var(--foreground); /* Ensure text color matches */
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.1); /* Slight hover effect */
+}
+
+/* Ensure explicit color for links */
+a {
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

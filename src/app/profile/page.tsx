@@ -1,23 +1,27 @@
 'use client';
 import React, { useState } from 'react';
 import Header from '@/components/Header';
-import { Edit2 } from 'lucide-react';
+import { Edit2, UserCircle, BookOpen, Award } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Profile = () => {
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    university: 'University of Example',
-    bio: 'A passionate learner pursuing a degree in Computer Science.',
-    courses: ['CS101', 'CS102', 'Math201'],
-    achievements: ['Dean’s List 2023', 'Hackathon Winner'],
+    name: user?.name || 'John Doe',
+    email: user?.email || 'john.doe@example.com',
+    university: user?.university || 'University of Example',
+    bio: user?.bio || 'A passionate learner striving for excellence.',
+    courses: user?.courses || ['CS101', 'CS102', 'Math201'],
+    achievements: user?.achievements || ['Dean’s List 2023', 'Hackathon Winner'],
+    interests: user?.interests || ['Artificial Intelligence', 'Cybersecurity', 'Blockchain'],
   });
   const [tempProfile, setTempProfile] = useState({ ...profile });
 
   const handleSave = () => {
     setProfile({ ...tempProfile });
     setIsEditing(false);
+    // Add API call to save profile changes if necessary
   };
 
   const handleCancel = () => {
@@ -33,7 +37,7 @@ const Profile = () => {
           <div>
             <h1 className="text-4xl font-bold text-gray-900">Your Profile</h1>
             <p className="text-lg text-gray-600">
-              View and edit your personal and academic information.
+              Showcase your academic journey and achievements.
             </p>
           </div>
           <button
@@ -45,7 +49,15 @@ const Profile = () => {
           </button>
         </div>
 
-        <div className="bg-white shadow rounded-md p-6 space-y-6">
+        <div className="bg-white shadow rounded-md p-6 space-y-8">
+          <div className="flex items-center space-x-6">
+            <UserCircle size={80} className="text-gray-400" />
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">{profile.name}</h2>
+              <p className="text-lg text-gray-600">{profile.university}</p>
+            </div>
+          </div>
+
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Personal Information</h2>
             <div className="mt-4">
@@ -56,14 +68,14 @@ const Profile = () => {
                     type="text"
                     value={tempProfile.name}
                     onChange={(e) => setTempProfile({ ...tempProfile, name: e.target.value })}
-                    className="mt-1 p-2 border rounded-md w-full"
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <label className="block text-sm font-medium text-gray-700 mt-4">Email</label>
                   <input
                     type="email"
                     value={tempProfile.email}
                     onChange={(e) => setTempProfile({ ...tempProfile, email: e.target.value })}
-                    className="mt-1 p-2 border rounded-md w-full"
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </>
               ) : (
@@ -76,22 +88,23 @@ const Profile = () => {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">University Information</h2>
-            <p className="text-lg font-medium">University: {profile.university}</p>
-            <p className="text-lg font-medium">Bio: {isEditing ? (
+            <h2 className="text-2xl font-bold text-gray-900">Bio</h2>
+            <p className="text-lg font-medium text-gray-600">{isEditing ? (
               <textarea
                 value={tempProfile.bio}
                 onChange={(e) => setTempProfile({ ...tempProfile, bio: e.target.value })}
-                className="mt-1 p-2 border rounded-md w-full"
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             ) : profile.bio}</p>
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Courses</h2>
-            <ul className="list-disc pl-5">
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <BookOpen size={24} /> Courses
+            </h2>
+            <ul className="list-disc pl-5 mt-4">
               {profile.courses.map((course, index) => (
-                <li key={index} className="text-lg font-medium">
+                <li key={index} className="text-lg font-medium text-gray-900">
                   {course}
                 </li>
               ))}
@@ -99,11 +112,24 @@ const Profile = () => {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Achievements</h2>
-            <ul className="list-disc pl-5">
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <Award size={24} /> Achievements
+            </h2>
+            <ul className="list-disc pl-5 mt-4">
               {profile.achievements.map((achievement, index) => (
-                <li key={index} className="text-lg font-medium">
+                <li key={index} className="text-lg font-medium text-gray-900">
                   {achievement}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Interests</h2>
+            <ul className="list-disc pl-5 mt-4">
+              {profile.interests.map((interest, index) => (
+                <li key={index} className="text-lg font-medium text-gray-900">
+                  {interest}
                 </li>
               ))}
             </ul>

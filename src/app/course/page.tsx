@@ -5,7 +5,7 @@ import ProgressBar from '@/components/course/ProgressBar';
 import Header from '@/components/Header';
 import { useAuth } from '@/contexts/AuthContext';
 import { cseCourses, achievements } from '@/data/courseData';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
@@ -16,9 +16,15 @@ const Course = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const { width, height } = useWindowSize();
 
+  // Redirect to login if the user is not authenticated
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user, router]);
+
   if (!user) {
-    router.push('/login');
-    return null;
+    return null; // Render nothing while redirecting
   }
 
   const calculateLevel = (points: number) => Math.floor(points / 1000) + 1;

@@ -12,6 +12,11 @@ interface User {
   completedCourses: string[];
   points: number;
   badges: string[];
+  bio?: string;
+  courses?: string[]; // Added courses property
+  achievements?: string[]; // Added achievements property
+  interests?: string[];
+  
 }
 
 // Define the AuthContextType interface

@@ -15,7 +15,7 @@
 }
 
 body {
-  color: var(--foreground);
+  color: var(--foreground); /* Only applied to unstyled elements */
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
