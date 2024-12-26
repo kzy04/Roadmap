@@ -7,12 +7,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { cseCourses, achievements } from '@/data/courseData';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
+import Confetti from 'react-confetti';
+import { useWindowSize } from 'react-use';
 
 const Course = () => {
   const { user } = useAuth();
   const router = useRouter();
   const [showConfetti, setShowConfetti] = useState(false);
+  const { width, height } = useWindowSize();
 
   if (!user) {
     router.push('/login');
@@ -29,7 +31,6 @@ const Course = () => {
   };
 
   const handleCourseComplete = (courseId: string) => {
-    // In a real app, this would be an API call
     console.log('Completed course:', courseId);
     setShowConfetti(true);
     setTimeout(() => setShowConfetti(false), 3000);
@@ -37,10 +38,10 @@ const Course = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {showConfetti && <Confetti width={width} height={height} />}
       <Header />
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main course grid */}
           <div className="lg:col-span-2 space-y-6">
             <h1 className="text-3xl font-bold text-gray-900">
               Your Course Roadmap
@@ -61,8 +62,6 @@ const Course = () => {
               ))}
             </div>
           </div>
-
-          {/* Achievements sidebar */}
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-gray-900">Achievements</h2>
             <div className="space-y-4">
