@@ -1,118 +1,154 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { CourseNode } from "./course-node";
-import { supabase } from "@/lib/supabase"; // Import the Supabase client
+import React, { useEffect, useState } from "react";
+import {
+  Course,
+  distributeCourses,
+  buildCourseGraph,
+  getHighlightedCourses,
+} from "@/utils/roadmap-utils";
+import { CreditCounter } from "../course/CreditCounter";
+import { Semester } from "../Semester/semester";
 
 export function CourseGraph() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [courses, setCourses] = useState<any[]>([]);
-  const [lines, setLines] = useState<Array<{ start: string; end: string }>>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [semesters, setSemesters] = useState<Course[][]>([]);
+  const [availableCourses, setAvailableCourses] = useState<Course[]>([]);
+  const [highlightedCourses, setHighlightedCourses] = useState<{
+    prerequisites: Set<string>;
+    dependents: Set<string>;
+  }>({
+    prerequisites: new Set(),
+    dependents: new Set(),
+  });
+  const [courseGraph, setCourseGraph] = useState<{
+    [key: string]: { prerequisites: string[]; dependents: string[] };
+  }>({});
 
-  // Fetch the course data and prerequisites from Supabase
+  const [numSemesters, setNumSemesters] = useState<number>(8); // Default 8 semesters
+
+  // Fetch courses and initialize data
   useEffect(() => {
     const fetchCourses = async () => {
-      // Query to get all the courses and prerequisites from Supabase
-      const { data: coursesData, error } = await supabase
-        .from('courses') // Replace 'courses' with your actual table name
-        .select('id, course_name, credits, prerequisites') // Adjust the fields as necessary
+      try {
+        const response = await fetch("/api/courses");
+        if (!response.ok) throw new Error("Failed to fetch courses");
 
-      if (error) {
-        console.error("Error fetching courses:", error);
-        return;
+        const data = await response.json();
+        console.log("Fetched courses:", data);
+
+        if (Array.isArray(data)) {
+          setCourses(data);
+          setAvailableCourses(data);
+
+          // Distribute courses into semesters
+          const initialSemesters = distributeCourses(data, numSemesters, 4);
+          setSemesters(initialSemesters);
+
+          // Build course graph for prerequisites and dependents
+          const graph = buildCourseGraph(data);
+          setCourseGraph(graph);
+        } else {
+          console.error("API response is not an array:", data);
+        }
+      } catch (err) {
+        console.error("Error fetching courses:", err);
       }
-
-      // Process the data to map prerequisites as array of course ids
-      const coursesWithPrereqs = coursesData?.map(course => ({
-        ...course,
-        prerequisites: course.prerequisites ? course.prerequisites.split(",") : [] // Assuming comma-separated values for prerequisites
-      }));
-
-      setCourses(coursesWithPrereqs || []);
     };
 
     fetchCourses();
   }, []);
 
-  // Create lines for prerequisites relationships
-  useEffect(() => {
-    const drawLines = () => {
-      const newLines: Array<{ start: string; end: string }> = [];
-      courses.forEach(course => {
-        course.prerequisites.forEach(prereqId => {
-          newLines.push({ start: prereqId, end: course.id });
-        });
-      });
-      setLines(newLines);
-    };
+  // Highlight prerequisites and dependents for a course
+  const handleCourseClick = (courseId: string) => {
+    if (!courseGraph[courseId]) {
+      console.warn("Course not found in graph:", courseId);
+      return;
+    }
 
-    drawLines();
-  }, [courses]);
+    const highlighted = getHighlightedCourses(courseId, courses);
+    console.log("Highlighted Courses:", highlighted);
+    setHighlightedCourses({
+      prerequisites: highlighted?.prerequisites || new Set(),
+      dependents: highlighted?.dependents || new Set(),
+    });
+  };
+
+  // Add a new semester dynamically
+  const handleAddSemester = () => {
+    setNumSemesters((prev) => prev + 1);
+    setSemesters((prev) => [...prev, []]); // Add an empty semester
+  };
+
+  // Add a course to a specific semester
+  const handleAddCourse = (semesterIndex: number, course: Course) => {
+    setSemesters((prevSemesters) => {
+      const updatedSemesters = [...prevSemesters];
+      updatedSemesters[semesterIndex] = [...updatedSemesters[semesterIndex], course];
+      return updatedSemesters;
+    });
+
+    // Remove the added course from available courses
+    setAvailableCourses((prevCourses) =>
+      prevCourses.filter((c) => c.course_id !== course.course_id)
+    );
+  };
+
+  // Remove a course from a semester
+  const handleRemoveCourse = (semesterIndex: number, course: Course) => {
+    setSemesters((prevSemesters) => {
+      const updatedSemesters = [...prevSemesters];
+      updatedSemesters[semesterIndex] = updatedSemesters[semesterIndex].filter(
+        (c) => c.course_id !== course.course_id
+      );
+      return updatedSemesters;
+    });
+
+    // Add the removed course back to available courses
+    setAvailableCourses((prevCourses) => [...prevCourses, course]);
+  };
 
   return (
-    <div className="relative w-full overflow-x-auto p-8" ref={containerRef}>
-      <svg
-        className="absolute inset-0 pointer-events-none"
-        style={{ minWidth: "100%", height: "100%" }}
-      >
-        {lines.map((line, index) => {
-          const startEl = document.getElementById(line.start);
-          const endEl = document.getElementById(line.end);
+    <div className="container mx-auto p-8">
+      {/* Credit Counter */}
+      <CreditCounter semesters={semesters} />
 
-          if (startEl && endEl) {
-            const startRect = startEl.getBoundingClientRect();
-            const endRect = endEl.getBoundingClientRect();
-            const containerRect = containerRef.current?.getBoundingClientRect();
+      {/* Legend for Difficulty */}
+      <div className="flex items-center gap-4 mb-6">
+        <span className="flex items-center gap-2">
+          <span className="w-4 h-4 bg-green-100 rounded-full"></span> Beginner
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="w-4 h-4 bg-yellow-100 rounded-full"></span> Intermediate
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="w-4 h-4 bg-red-100 rounded-full"></span> Advanced
+        </span>
+      </div>
 
-            if (containerRect) {
-              const startX = startRect.left - containerRect.left + startRect.width / 2;
-              const startY = startRect.top - containerRect.top + startRect.height;
-              const endX = endRect.left - containerRect.left + endRect.width / 2;
-              const endY = endRect.top - containerRect.top;
+      {/* Add Semester Button */}
+      <div className="flex justify-end mb-4">
+        <button
+          className="px-4 py-2 bg-green-500 text-white rounded-lg"
+          onClick={handleAddSemester}
+        >
+          Add Semester
+        </button>
+      </div>
 
-              const midY = startY + (endY - startY) * 0.5;
-
-              return (
-                <g key={index}>
-                  <path
-                    d={`M ${startX} ${startY} 
-                        C ${startX} ${midY},
-                          ${endX} ${midY},
-                          ${endX} ${endY}`}
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    fill="none"
-                    className="text-muted-foreground/30"
-                  />
-                  <circle
-                    cx={endX}
-                    cy={endY}
-                    r="3"
-                    fill="currentColor"
-                    className="text-muted-foreground/50"
-                  />
-                </g>
-              );
-            }
-          }
-          return null;
-        })}
-      </svg>
-
-      <div className="flex flex-col gap-16">
-        {/* Loop through semesters, but now you will create the map based on prerequisites */}
-        {courses.map(course => (
-          <div key={course.id} className="relative">
-            <div className="flex gap-8 flex-wrap">
-              <div key={course.id} id={course.id}>
-                <CourseNode 
-                  course={course} 
-                  type={course.prerequisites.length === 0 ? "primary" : 
-                        course.prerequisites.length > 1 ? "secondary" : "default"}
-                />
-              </div>
-            </div>
-          </div>
+      {/* Semesters in a tabular layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {semesters.map((semesterCourses, semesterIndex) => (
+          <Semester
+            key={semesterIndex} // Unique key
+            semesterIndex={semesterIndex}
+            courses={semesterCourses}
+            availableCourses={availableCourses}
+            highlightedCourses={highlightedCourses}
+            onCourseClick={handleCourseClick}
+            onAddCourse={(course: Course) => handleAddCourse(semesterIndex, course)}
+            onRemoveCourse={(course: Course) => handleRemoveCourse(semesterIndex, course)}
+          />
         ))}
       </div>
     </div>

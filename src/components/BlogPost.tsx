@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Image from "next/image";
 import { Calendar, School } from 'lucide-react';
 
 
@@ -14,11 +14,7 @@ interface BlogPostProps {
 const BlogPost = ({ title, university, date, content, imageUrl }: BlogPostProps) => {
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden">
-      <img 
-        src={imageUrl} 
-        alt={title} 
-        className="w-full h-48 object-cover"
-      />
+      <Image src={imageUrl} alt={title} width={600} height={400} />
       <div className="p-6">
         <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
           <span className="flex items-center gap-1">

@@ -1,20 +1,17 @@
 'use client';
+
 import AchievementCard from '@/components/course/AchievementCard';
 import CourseNode from '@/components/course/CourseNode';
 import ProgressBar from '@/components/course/ProgressBar';
 import Header from '@/components/Header';
 import { useAuth } from '@/contexts/AuthContext';
 import { cseCourses, achievements } from '@/data/courseData';
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Confetti from 'react-confetti';
-import { useWindowSize } from 'react-use';
 
 const Course = () => {
   const { user } = useAuth();
   const router = useRouter();
-  const [showConfetti, setShowConfetti] = useState(false);
-  const { width, height } = useWindowSize();
 
   // Redirect to login if the user is not authenticated
   useEffect(() => {
@@ -38,13 +35,10 @@ const Course = () => {
 
   const handleCourseComplete = (courseId: string) => {
     console.log('Completed course:', courseId);
-    setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 3000);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {showConfetti && <Confetti width={width} height={height} />}
       <Header />
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

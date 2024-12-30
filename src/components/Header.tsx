@@ -25,6 +25,13 @@ const Header = () => {
                 <span>Course</span>
               </Link>
             )}
+             <Link
+              href="/roadmap"
+              className="flex items-center space-x-2 hover:text-blue-200 transition-colors"
+            >
+              <User size={20} />
+              <span>Roadmap</span>
+            </Link>
             <Link
               href="/blog"
               className="flex items-center space-x-2 hover:text-blue-200 transition-colors"
@@ -46,6 +53,7 @@ const Header = () => {
               <User size={20} />
               <span>Profile</span>
             </Link>
+           
           </nav>
         </div>
       </div>
