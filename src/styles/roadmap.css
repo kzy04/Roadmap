@@ -1,0 +1,58 @@
+/* Add this to your global.css or a dedicated CSS file */
+
+/* General styles for the SVG container */
+svg {
+    background-color: #f9f9f9; /* Light background for better visibility */
+    border: 1px solid #ddd;   /* Subtle border around the graph */
+    display: block;
+    margin: 20px auto;        /* Center the graph on the page */
+    overflow: visible;        /* Ensure content is not clipped */
+  }
+  
+  /* Styles for the links (edges) */
+  .link {
+    stroke: #999;            /* Gray color for edges */
+    stroke-opacity: 0.6;     /* Semi-transparent edges */
+    stroke-width: 2px;       /* Thickness of edges */
+    cursor: pointer;         /* Pointer cursor for interactivity */
+  }
+  
+  /* Styles for the nodes */
+  .node circle {
+    stroke: #fff;            /* White border around nodes */
+    stroke-width: 1.5px;     /* Thickness of the node border */
+    cursor: grab;            /* Hand cursor for drag-and-drop */
+  }
+  
+  .node text {
+    font-size: 12px;         /* Small text for course names */
+    fill: #333;              /* Dark text color */
+    pointer-events: none;    /* Prevent text from capturing mouse events */
+  }
+  
+  /* Highlight hovered nodes */
+  .node:hover circle {
+    fill: orange;            /* Highlight color on hover */
+  }
+  
+  /* Highlight links when hovered */
+  .link:hover {
+    stroke: orange;          /* Highlight edges on hover */
+    stroke-width: 3px;       /* Thicker edge on hover */
+  }
+  
+  /* Page container styles */
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif; /* Use a clean, modern font */
+    background-color: #ffffff;      /* White page background */
+    color: #333;                    /* Text color */
+  }
+  
+  h1 {
+    text-align: center;
+    font-size: 24px;
+    margin: 20px 0;
+    color: #333;
+  }
+  
