@@ -7,7 +7,7 @@ import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Users, Calendar, ExternalLink } from 'lucide-react';
+import { MapPin, Users, Calendar, ExternalLink } from "lucide-react";
 import Image from "next/image";
 
 interface University {
@@ -16,6 +16,9 @@ interface University {
   universities_short_name: string;
   universities_location: string;
   universities_website: string;
+  description: string;
+  year_created: number;
+  student_numbers: number;
 }
 
 // Fetch university data server-side by using the university short name
@@ -36,6 +39,9 @@ async function fetchUniversity(shortName: string): Promise<University | null> {
     universities_short_name: universityDoc.universities_short_name,
     universities_location: universityDoc.universities_location,
     universities_website: universityDoc.universities_website,
+    description: universityDoc.description,
+    year_created: universityDoc.year_created,
+    student_numbers: universityDoc.student_numbers,
   };
 
   return university;
@@ -47,6 +53,7 @@ export async function generateMetadata({
 }: {
   params: { university_short_name: string };
 }): Promise<Metadata> {
+  // Await the params before accessing it
   const university = await fetchUniversity(params.university_short_name);
 
   if (!university) {
@@ -65,8 +72,10 @@ export default async function UniversityPage({
 }: {
   params: { university_short_name: string };
 }) {
+  // Await the params before accessing it
   const { university_short_name } = params;
 
+  // Ensure async operation to fetch data based on the short name
   const university = await fetchUniversity(university_short_name);
 
   if (!university) {
@@ -114,16 +123,15 @@ export default async function UniversityPage({
                   <div className="flex flex-wrap gap-6 text-xl">
                     <div className="flex items-center gap-4">
                       <Calendar className="h-5 w-5 text-muted-foreground" />
-                      <span>Est. 1992</span>
+                      <span>Est. {university.year_created}</span>
                     </div>
                     <div className="flex items-center gap-4">
                       <Users className="h-5 w-5 text-muted-foreground" />
-                      <span>20,000+ Students</span>
+                      <span>{university.student_numbers}+ Students</span>
                     </div>
                   </div>
                   <p className="text-xl text-muted-foreground">
-                    One of the first private universities in Bangladesh, offering quality education in business, engineering,
-                    and liberal arts. This prestigious institution aims to provide cutting-edge knowledge and professional skills.
+                    {university.description}
                   </p>
                 </div>
               </CardContent>
