@@ -26,6 +26,7 @@ async function getMongoClient() {
   return client;
 }
 
+// GET method to fetch universities
 export async function GET() {
   try {
     // Use cached data if it is still valid
@@ -51,5 +52,54 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching universities:', error);
     return NextResponse.json({ error: 'Failed to fetch universities' }, { status: 500 });
+  }
+}
+
+// PUT method to update university data
+export async function PUT(request: Request) {
+  try {
+    const url = new URL(request.url);
+    const universities_short_name = url.searchParams.get('universities_short_name');
+    const body = await request.json();
+
+    if (!universities_short_name) {
+      return NextResponse.json({ error: 'University short name is required' }, { status: 400 });
+    }
+
+    // Extract fields to update from the request body
+    const { description, year_created, student_numbers } = body;
+
+    if (!description || !year_created || !student_numbers) {
+      return NextResponse.json({ error: 'Missing required fields: description, year_created, student_numbers' }, { status: 400 });
+    }
+
+    // Get the database client
+    const mongoClient = await getMongoClient();
+    const db = mongoClient.db(dbName);
+
+    // Update university based on the short name
+    const result = await db.collection(collectionName).updateOne(
+      { universities_short_name: universities_short_name },
+      {
+        $set: {
+          description,
+          year_created,
+          student_numbers,
+        },
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return NextResponse.json({ error: 'University not found or no changes made' }, { status: 404 });
+    }
+
+    // Clear the cache so that the new data is fetched
+    cachedUniversities = null;
+    cacheTimestamp = null;
+
+    return NextResponse.json({ success: true, message: 'University data updated successfully' });
+  } catch (error) {
+    console.error('Error updating university:', error);
+    return NextResponse.json({ error: 'Failed to update university data' }, { status: 500 });
   }
 }

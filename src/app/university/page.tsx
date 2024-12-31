@@ -60,7 +60,7 @@ export default function UniversityLandingPage() {
 
       <main className="max-w-7xl mx-auto p-6">
         <BackButton />
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">University Directory</h1>
+        <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">University Directory</h1>
 
         {/* Search Bar */}
         <div className="mb-6 flex justify-center">
