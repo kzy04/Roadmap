@@ -15,7 +15,15 @@ const Header = () => {
           <Link href="/" className="text-3xl font-bold tracking-tight">
             CourseMap
           </Link>
+          
           <nav className="flex items-center space-x-8">
+          <Link
+                href="/university"
+                className="flex items-center space-x-2 hover:text-blue-200 transition-colors"
+              >
+                <GraduationCap size={20} />
+                <span>Universities</span>
+              </Link>
             {user && (
               <Link
                 href="/course"

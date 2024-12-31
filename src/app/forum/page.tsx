@@ -45,8 +45,8 @@ const Forums = () => {
           </div>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-aria-label="Create a new post"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            aria-label="Create a new post"
           >
             <PlusCircle size={20} />
             Create Post
